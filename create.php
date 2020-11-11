@@ -51,10 +51,20 @@
 		?>
 	</p>
 	<a href="create.php">create</a>
+	<form action="create_process.php" method="post">
+		<p>
+			<input type="text" name="title" placeholder="Title"/>
+		</p>
+		<p>
+			<textarea name="description"></textarea>
+		</p>
+		<p>
+			<input type="submit" value="만들기"/>
+		</p>
 	<?php
 		function print_title(){
-			if(isset($_GET['id'])){
-				echo $_GET['id'];
+			if(isset($_POST['title'])){
+				echo $_POST['title'];
 			}else{
 				echo 'welcome';
 			}
@@ -65,15 +75,15 @@
 			while($i < count($list)){
 				if($list[$i] != '.'){
 					if($list[$i] != '..'){
-						echo "<li><a href=\"index.php?id=$list[$i]\">$list[$i]</a></li>";
+						echo "<li><a href=\"index.php?title=$list[$i]\">$list[$i]</a></li>";
 					}
 				}
 				$i++;
 			}
 		}
 		function print_description(){
-			if(isset($_GET['id'])){
-				echo file_get_contents("data/".$_GET['id']);
+			if(isset($_POST['description'])){
+				echo file_get_contents("data/".$_POST['description']);
 			}else{
 				echo "welcome to PHP";
 			}
