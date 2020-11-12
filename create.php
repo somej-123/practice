@@ -9,7 +9,7 @@
 	</title>
 </head>
 <body>
-	<h1><a href="index.php">WEB</a></h1>
+	<h1><a href="create.php">WEB</a></h1>
 	<ol>
 		<?php
 				print_list();
@@ -51,6 +51,15 @@
 		?>
 	</p>
 	<a href="create.php">create</a>
+	<?php
+		if(isset($_GET['id'])){?><!--만약 url->id안에 값이 있다면
+		-->
+			<a href="update.php?id=<?=$_GET['id'];?>">Update</a><!--경로 태그를 추가해준다.(이것만 html태그로 작성)-->
+			<form action="delete_process.php" method="post">
+				<input type="hidden" name="id" value="<?=$_GET['id']?>"/>
+				<input type="submit" value="delete"/>
+			</form>
+		<?php } ?><!--php로 시작했기 때문에 php로 끝나야 한다.-->
 	<form action="create_process.php" method="post">
 		<p>
 			<input type="text" name="title" placeholder="Title"/>
@@ -61,10 +70,11 @@
 		<p>
 			<input type="submit" value="만들기"/>
 		</p>
+	</form>
 	<?php
 		function print_title(){
-			if(isset($_POST['title'])){
-				echo $_POST['title'];
+			if(isset($_GET['id'])){
+				echo $_GET['id'];
 			}else{
 				echo 'welcome';
 			}
@@ -75,15 +85,15 @@
 			while($i < count($list)){
 				if($list[$i] != '.'){
 					if($list[$i] != '..'){
-						echo "<li><a href=\"index.php?title=$list[$i]\">$list[$i]</a></li>";
+						echo "<li><a href=\"create.php?id=$list[$i]\">$list[$i]</a></li>";
 					}
 				}
 				$i++;
 			}
 		}
 		function print_description(){
-			if(isset($_POST['description'])){
-				echo file_get_contents("data/".$_POST['description']);
+			if(isset($_GET['id'])){
+				echo file_get_contents("data/".$_GET['id']);
 			}else{
 				echo "welcome to PHP";
 			}

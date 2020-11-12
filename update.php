@@ -9,7 +9,7 @@
 	</title>
 </head>
 <body>
-	<h1><a href="index.php">WEB</a></h1>
+	<h1><a href="create.php">WEB</a></h1>
 	<ol>
 		<?php
 				print_list();
@@ -52,6 +52,23 @@
 	</p>
 	<a href="create.php">create</a>
 	<?php
+		if(isset($_GET['id'])){?><!--만약 url->id안에 값이 있다면
+		-->
+			<a href="update.php?id=<?=$_GET['id'];?>">Update</a><!--경로 태그를 추가해준다.(이것만 html태그로 작성)-->
+		<?php } ?><!--php로 시작했기 때문에 php로 끝나야 한다.-->
+	<form action="update_process.php" method="post">
+		<input type="hidden" name="old_title" value="<?= $_GET['id']?>"/>
+		<p>
+			<input type="text" name="title" placeholder="Title" value="<?php print_title() ?>"/>
+		</p>
+		<p>
+			<textarea name="description" style="min-width:700px; min-height:100px"><?php print_description() ?></textarea>
+		</p>
+		<p>
+			<input type="submit" value="만들기"/>
+		</p>
+	</form>
+	<?php
 		function print_title(){
 			if(isset($_GET['id'])){
 				echo $_GET['id'];
@@ -65,7 +82,7 @@
 			while($i < count($list)){
 				if($list[$i] != '.'){
 					if($list[$i] != '..'){
-						echo "<li><a href=\"index.php?id=$list[$i]\">$list[$i]</a></li>";
+						echo "<li><a href=\"create.php?id=$list[$i]\">$list[$i]</a></li>";
 					}
 				}
 				$i++;
@@ -73,7 +90,7 @@
 		}
 		function print_description(){
 			if(isset($_GET['id'])){
-				echo file_get_contents("data/".$_GET['id'].'.php');
+				echo file_get_contents("data/".$_GET['id']);
 			}else{
 				echo "welcome to PHP";
 			}
