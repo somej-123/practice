@@ -235,6 +235,38 @@ URL에 name 대신 title로 지정하면 애플리케이션이 작동하지 않�
 
 하지만 코드의 $_GET['name']을 $_GET['title']로 바꾸면 정상적으로 작동한다.
 
+GET과 POST
+
+HTML의 form을 이용하여 값을 전송하는 방식은 get과 post 두 가지가 있다.
+php로 그 값을 받아서 사용하는 방법을 알아보자
+
+GET방식으로 전송한 경우
+
+다음은 GET방식으로 값을 전송하는 간단한 예제이다.
+
+    <form method="get" action="form-action.php">
+      <p><label>Color : <input type="text" name="color"></label></p>
+      <p><label>Sport : <input type="text" name="sport"></label></p>
+      <p><input type="submit" value="Submit"></p>
+    </form>
+
+결과 )
+url 주소 끝에 ?가 붙고 color=Red&sport=Basketball 이런식으로 붙는다.
+GET 방식으로 전송된 값은 $_GET으로 받는다.
+
+<?php
+  $color = $_GET['color'];
+  $sport = $_GET['sport'];
+?>
+
+ <body>
+    <p>Color is <?php echo $color ?>.</p>
+    <p>Sport is <?php echo $sport ?>.</p>
+  </body>
+
+POST 방식으로 값을 전달할 경우, URL에 아무 흔적이 남지 않는다.
+POST 방식으로 전송된 값은 $_POST로 받는다.
+
 그리고 만약 인사와 주소를 둘 다 넣고 싶다면 어떻게 해야하는지 보자.
 먼저 코드에 <?php echo $_GET['address'] ?>를 추가한다.
 
@@ -1020,3 +1052,440 @@ $list[$i] == '.';은 무슨 의미인가?
 				}
 				$i++;
 			}
+
+*함수 만들기
+
+함수는 크게 두 가지 측면이 있다.
+하나는 내가 만든 함수가 아닌 PHP에서 기본적으로 만들어서 php라는 언어를 쓰는 사람이 쓸 수 있도록 제공하는 함수를 사용하는 것이다.
+이것은 지금까지 쭉 해봤을 것이다.
+이를테면 scandir(), strlen(), count() 등을 사용했고, 그러한 함수들은 기본적으로 내장된 함수라는 점에서 내장 함수(bulit in function)라고 한다.
+지금까지는 내장 함수를 사용하는 방법을 살펴봤다, 그래서 이제부터 함수의 소비자뿐만 아니라 생산자도 되어보겠다.
+우선 함수를 배우기 전에 함수를 이용해 우리가 처한 상황을 어떻게 개선할지 살펴보고, 함수의 문법을 배우고 그렇게 배운 함수를 이용해 예제 어플리케이션을 좀 더 수준 높은 어플리케이션으로 만들겠다.
+
+<?php
+	if(isset($_GET['id'])){
+	}else{
+		echo "welcom to php";
+	}
+?>
+
+이 부분은 웹 페이지에서 제목을 표현하는 코드이다.
+
+하지만 이 줄이 1000줄이라면 무슨 코드인지 파악할 수 있을까? 불가능하다.
+
+함수라는 것을 직접 만들면 선택한 코드에 이름을 부여해서 어떤 기능인지 이름을 부여할 수 있다.
+예를 들ㄹ면 print_title();이 실행되면 제목을 만들어내는 코드를 실행하고, print_description();을 실행하면 본문을 만들어내는 코드를 실행한다면 위 함수를 보고 내용은 몰라도 어떤 역할인지 알 수 있다.
+그리고 강조된 코드는 print_list()라고 표현할 수 있지 않을까?
+
+그리고 현재 <title> 태그를 비워뒀는데, 현재 본문의 제목과 주소창의 제목이 똑같이 나오게 만들고 싶다면 이미 만들어 놓은 print_title()을 넣으면 된다.
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<title>
+		<?php
+			print_title();
+		?>
+	</title>
+</head>
+<body>
+	<h1><a href="index.php">WEB</a></h1>
+	<ol>
+		<?php
+			print_list();
+			
+		?>
+	</ol>
+	<h2>
+		<?php
+			print_title();
+			
+		?>
+	</h2>
+	<p>
+		<?php
+			print_description();
+		
+		?>
+	</p>
+</body>
+</html>
+
+
+*함수의 형식 1/3
+
+function2.php라는 파일에 코드를 작성해보겠다.
+
+basic() 이라는 함수를 만들었다면 basic();은 이 함수가 실행되는 코드이다.
+
+함수 방식은 JS에서 했던것과 똑같이 하면 된다.
+
+입력값이 있으면 출력값도 있다.
+sum()을 자세히 보겠다.
+sum()이란 함수는 입력값을 통해 다르게 동작하는 것만으로 아주 혁명적인 변화를 겪었다만 자세히 들여다 보면 두 가지 기능이 있다.
+$left와 $right라는 값ㅂ 두 개를 더한다 와 화면에 출력한다 라는 기능 두 가지가 있다.
+뭔가를 더하고, 화면에 출력하는 것이 필요하면 sum()이란 함수를 쓰면 편리하겠죠?
+하지만 어떤 값을 뭔가를 더하고, 화면에 출력하는 것이 아니라 파일에 저장하고 싶을 수 있따.
+또는 이메일로 전송하고 싶을 수 있고, 파일을 업로드하고 싶을 수 있따.
+이처럼 여러 가지로 사용할 가능성이 있는데 더하는 기능과 화면에 출력하는 기능을 하나로 퉁쳐버리면 그 기능이 대단히 제한적으로 바뀐다.
+그래서 함수를 만들 때 중요한 관점 중 하나는 하나의 함수는 하나의 기능만 담는다라는 관점이다.
+물론 답이 있는 문제는 절대 아니다.
+
+함수의 출력값으로 이 문제를 해결해 보겠다.
+함수에서는 출력값을 return이라고 한다.
+sum2()라는 함수를 만들고 sum2(2,4);라고 실행했을 때 sum2() 자체적으로 결과를 출력하는 기능이 없다.
+그 대신 2와 4를 더한 결과인 6이 되는 표현식을 만들고 싶은 것이다.
+print(sum2(2,4));를 통해 6을 화면에 출력한다.
+
+그리고 sum이라는 함수안에 $left+$right에 들어가는 2,4는 인자(argument)값이라고 한다.
+
+function부분은 넘어가겠다...
+
+<?php
+        function sum($left,$right){
+            print($left + $right);
+            print("<br>");
+        }
+        sum(2,3);
+
+        function sum2($left2, $right2){
+            $result = $left2 + $right2;
+            return $result;
+        }
+        file_put_contents("result.txt", sum2(2,4));
+    ?>
+
+sum2에 있는 $left2, $right2 는 매개변수
+$reulst에 매개변수 2개 값을 더하고
+반환시킨다.
+
+(sum2(2,4))에 대한 값을 마지막에 해당 폴더에 result.txt라는 파일을 만들어 넣는다.
+return문자가 있으면 뒤에 다른 코드가 있어도 다 씹혀먹는다.
+
+
+함수 자체는 statement(서술,진술)이다.프로그래밍에서는 실행가능한(executable) 최소의 독립적인 코드 조각을 일컫는다. 우리가 프로그래밍을 하면서 컴파일러가 이해하고 실행할 수 있는 모든 구문은 statement다. 문법적으로 해당 언어에 적합한 모든 코드 한 줄이나 블록은 statement라고 할 수 있다. statement는 흔히 한 개 이상의 expression[Expression은 ‘수식’이라는 뜻으로 하나 이상의 값으로 표현(reduce)될 수 있는 코드를 말한다. ]과 프로그래밍 키워드를 포함하는 경우가 많다.
+
+
+함수를 배운걸 토대로 그전의 내용을 바꿔보겠다.
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<title>
+		<?php
+			print_title();
+		?>
+	</title>
+</head>
+<body>
+	<h1><a href="index.php">WEB</a></h1>
+	<ol>
+		<?php
+				print_list();
+		?>
+	</ol>
+	<h2>
+		<?php
+			print_title();
+		?>
+	</h2>
+	<p>
+		<?php
+			print_description();
+		?>
+	</p>
+	<?php
+		function print_title(){
+			if(isset($_GET['id'])){
+				echo $_GET['id'];
+			}else{
+				echo 'welcome';
+			}
+		}
+		function print_list(){
+			$list = scandir('./data');
+			$i = 0;
+			while($i < count($list)){
+				if($list[$i] != '.'){
+					if($list[$i] != '..'){
+						echo "<li><a href=\"index.php?id=$list[$i]\">$list[$i]</a></li>";
+					}
+				}
+				$i++;
+			}
+		}
+		function print_description(){
+			if(isset($_GET['id'])){
+				echo file_get_contents("data/".$_GET['id']);
+			}else{
+				echo "welcome to PHP";
+			}
+		}
+	?>
+
+함수를 바라보는 첫 번째 시각은 일종의 정리 정돈을 위한 수납상자라고 이해하면 좋다.
+물론 함수는 더 다면적이다.
+
+그리고 함수로 정리 정돈을 한다는 것은 현실의 수납상자는 꿈도 못 꿀만큼 엄청난 수납상자라고 할 수 있다.
+비유하자면 선반 같은 수납상자를 샀다고 가정해보자
+그 크기가 손바닥 만하더라도 63빌딩이 들어갈 수 있다.
+현실에서의 수납상자에 물건을 넣으면 그 물건은 하나만 들어간다.
+그런데 코드를 함수라는 수납상자에 넣으면 언제든지 꺼내서 마음대로 사용할 수 있다.
+
+*폼과 POST
+
+글을 추가하는 기능을 살펴보자
+그전에 해야 할 것이 있다.
+사용자의 정보를 서버 쪽으로 전송할 때 사용하는 폼(form)이란 것을 살펴볼 필요가 있다.
+먼저 form.html파일을 만든다. (사용자에게 정보를 입력받는 HTML태그)
+
+<body>
+    <form action="form.php">
+        <input type="text" name="title" placeholder="Title"/>
+        <br>
+        <br>
+        <br>
+        <textarea name="content" placeholder="content"></textarea>
+        <br>
+        <input type="submit" value="전송">
+    </form>
+</body>
+
+action은 해당 폼의 주소를 어디로 보낼지 결정한다.
+
+name 속성은 서버쪽으로 전달할때 이름을 달아주는 역할을 한다,
+
+현재 상태로 submit=전송 버튼을 누르게 되면
+
+위에 action에 있던 경로로 해당 정보들이 전달된다.
+
+이때 URL파라미터는 $_GET을 통해 받을 수 있다.
+
+$_GET이란 배열임을 뜻한다.
+
+여태까지는 0,1,2와 같은 숫자만 들어가는 배열을 배웠지만 숫자 대신 문자로 값을 가져올 수 있는 배열도 있다.
+이 같은 배열을 연관배열(associative array)이라 한다.
+
+form.php에 다음과 같은 코드로 작성한 후 페이지를 새로고침 해보자
+
+<?php
+	echo $_GET['title'];
+	echo $_GET['content'];
+?>
+
+결과)
+form.php에 아까 form.html input중 name이 title인 폼이랑 연결돼 출력된다.
+content또한 마찬가지
+
+정리해보자면
+사용자가<form> 태그 안에 있는 <input>과 관련된 자용자의 정보를 받는 각각의 ui에 값을 입력할 것이다.
+그다음 submit 버튼을 누르면 submit 버튼이 속한 <form> 태그의 action속성이 가리키는 URL로 웹 브라우저가 페이지를 바꾼다.
+이때<form> 태그에 있는 각 입력값의 name 속성값을 이름으로 써서 URL 뒤에 title은 'php',content는 '내용'이라는 URL을 만들어 전송하는 것이다.
+
+이 맥락에서 <form> 태그는 사요자가 입력한 정보를 URL파라미터로 만들어 내는 것이라고 할 수 있다.
+이러한 점에 착안해서 무엇을 할 수 있을까?
+PHP에서 파일을 저장하는 함수는 file_put_contents()이다.
+그리고 이 함수의 첫 번째 인자로 경로가 들어간다.
+두 번째 인자로 description을 지정하면 사용자가 웹 브라우저에서 앞의 주소로 들어갔을 때 PHP가 어떻게 동작할까?
+data디렉터리에 PHP라는 파일을 생성할 것이다.
+
+<?php
+	file_put_contents('data/' .$_GET['title'], $_GET['content']);s
+?>
+
+바로 이런 이유로 데이터를 서버로 전송할 때 URL에 파라미터 정보가 포함되는 방식은 좋은 방식이 아니다.
+왜냐하면 사용자들이 이 시스템의 정보가 어떤 것인지 잘 모르니 주소를 복사해서 친구에게 줄 수 있기 때문이다.
+친구는 저 주소를 클릭했을 뿐이고 자기가 원하지 않았는데도 글이 작성되는 심각한 문제를 겪을 수 있다.
+URL을 통해 form.php에 데이터를 전송하는 방식은 사용자가 서버로 데이터를 보낼 때 혹은 지울 때 쓰면 안된다.
+그 대신 글 목록 HTML을 클릭할 때 주소가 나오는데, 누군가를 이 페이지로 오게 하고 싶을 때 127.0.0.1/index.php만 보내도 될까?
+안된다.
+127.0.0.1/index.php?id=HTML까지 보내야 현재 페이지로 올 수 있다.
+즉 URL파라미터를 통해 서버 쪽에 데이터를 전송하는 것은 북마크에서 사용하기에 적합하다.
+어떤 콘텐츠는 다른 사람에게 공유할 때 적합한 방식이다.
+
+반대로 앞서 살펴본 것처럼 form.html처럼 URL을 통해 데이터를 서버로 전송하는 방식은 이 주소를 공유했을 때 데이터가 추가되는 문제가 있기 때문에 좋지 않다.
+그럼 어떻게 해야 할까?
+URL을 쓰지 않고 은밀하게 데이터를 전송해야 한다,
+<form>에 데이터를 어떻게 전송할지를 지정하는 method 속성값에 post를 쓰면 된다.
+
+*글 생성
+
+이전 시간에는 폼이 무엇인지 알아봤으니 폼을 예제 애플리케이션에 적용해보겠다
+먼저 index.php를 열어보자
+welcome이라는 두 번째 제목에 create라는 링크를 추가하자
+
+아까 form.html에 있던 폼을 create.php에 붙이고
+form.php는 create_process.php에 붙여서 조합하여 만든다.
+
+생성까지는 완료했지만 여전히 submit버튼을 누르면 흰색 화면만 나오니 사용자 입장에서는 당황스럽다.
+어떻게 하면 좋을까?
+
+웹 브라우저의 기능 중에 리다이렉션이라는 기능이 있다,
+사용자는 submit 버튼을 통해 create_process.php로 왔따.
+이와 마찬가지로 사용자를 다른 페이지로 보내버릴 수 있다.
+이를 리다이렉션(redirection)이라 한다.
+리다이렉션을 수행하는 php 명령어는 다음과 같다,
+
+header('Location: 이동할 주소');
+
+위 명령어를 이용하면 현재 위치하고 있는 주소(create_process.php)에서 index.php의 id가 $POST['title']에 해당하는 주소로 사용자를 보낼 수 있다.
+
+*글 수정
+
+이번 시간에는 CRUD에서 업데이트(Update), 즉 이미 존재하는 콘텐츠의 내용을 수정하는 방법을 살펴보겠다
+update는 언제 기능을 활성화 해야할까?
+특정 글을 선택했을 때 update가 나와야 한다.
+조건문을 사용하면 된다.
+
+<?php
+	if(isset($_GET['id'])) { ?>
+		<a href="update.php">Update</a>
+	<?php } ?>
+
+update를 클릭했을 때 내용을 수정하려면 수정하려는 내용이 무엇인지 알아야 한다.
+마치 그것은 보고자 하는 것이 무엇이냐를 알려면 id 값을 전달해야 하는 것과 같다.
+update는 현재 우리가 보고 있는 페이지에 대한 id값을 가져와야 한다.
+
+<a href="update.php?id=<?php echo $_GET['id'];?>">Update</a><!--경로 태그를 추가해준다.(이것만 html태그로 작성)-->
+이렇게 되면 id값을 가지고 가는것을 볼 수 있다.
+
+여기서 한가지 팁이 있다면 echo대신 다음과 같이 하면 코드가 더 깔끔해진다.
+
+<a href="update.php?id=<?=$_GET['id'];?>">Update</a><!--경로 태그를 추가해준다.(이것만 html태그로 작성)-->
+
+다음 두 코드가 같다,
+
+<?php echo $_GET['id']; ?>
+<?=$_GET['id']; ?>
+
+그럼 update.php를 추가해보겠다.
+
+update.php는 index.php의 내용을 그대로 복사해서 가져온다.
+
+수정 부분)
+<?php
+		if(isset($_GET['id'])){?><!--만약 url->id안에 값이 있다면
+		-->
+			<a href="update.php?id=<?=$_GET['id'];?>">Update</a><!--경로 태그를 추가해준다.(이것만 html태그로 작성)-->
+		<?php } ?><!--php로 시작했기 때문에 php로 끝나야 한다.-->
+	<form action="create_process.php" method="post">
+		<p>
+			<input type="text" name="title" placeholder="Title" value="<?php print_title() ?>"/>
+		</p>
+		<p>
+			<textarea name="description" style="min-width:700px; min-height:100px"><?php print_description() ?></textarea>
+		</p>
+		<p>
+			<input type="submit" value="만들기"/>
+		</p>
+
+이렇게 하면 해당 게시글을 눌렀을때 제목과 내용이 나오는 것을 볼 수 있다.
+
+update는 보다시피 읽기와 쓰기가 모두 필요하며, 앞에서 배운 내용이 총동원됐다.
+이제 이 상태에서 submit버튼을 클릭했을 때 이동할 페이지를 지정하겠다.
+글을 추가할 때는 create_process.php로 지정했는데, 업데이트 할 때는 update_process.php로 지정하겠다.
+
+<form action="update_process.php" method="post"> // 수정
+
+따라서 update_process.php 파일을 만들었다면 내부적으로 코드를 어떻게 작성해야 할까?
+만약 사용자가 HTML이라는 제목을 HTML2로 바꿨다면 어떻게 해야 할까?
+data 디렉토리에 있는 HTML이라는 파일명을 HTML2로 바꾸고 그 내용을 기록하면 되지 않을까?
+이때 필요한 것은 "파일명을 어떻게 바꿔야 하는가"이다.
+
+검색엔진에서 php file name change를 검색해보자
+
+찾아보면 rename()이라는 것이 있다.
+
+rename ( string $oldname , string $newname [, resource $context ] ) : bool
+
+첫 번째 인자로 oldname이 들어오고 두번째 인자로 새로운 이름을 의미하는 newname이 들어온다.
+
+일단은 update_process.php의 코드를 작성해보자
+
+$_POST['title']을 첫 번째 인자로 하면 될까?
+방금 수정한 title 제목은 새로운 이름이지 이전 이름이 아니다.
+그래서 $_POST['title']은 두 번째 인자로 들어와야 한다.
+왜냐하면 새로운 이름이 두 번째 인자이기 때문이다.
+우리가 서버 쪽으로 데이터를 전송할 때 'title'이라는 name으로는 사용자가 수정한 값이 전달되므로 title이라는 값은 수정될 파이렴이고, 이전 파일명에 대한 정보를 따로 서버로 보내야 한다.
+이때 사용하기 좋은 태그가 있다.
+<input> 태그의 type 속성값 가운데 'hidden'이라는 것이 있다.
+그리고 name은 old_title, value는 공백으로 지정하고 페이지를 새로고침 해보자
+
+보다시피 <input> 태그를 추가했는데 아무런 변화가 생기지 않았다.
+type이 'hidden'이기 때문이다.
+즉, 사용자에게는 노출하지 않으면서 Submit 버튼을 눌렀을 때 action이 가리키는 애플리케이션으로 어떠한 데이터를 전송하고 싶다면 그때 쓸만한 폼 UI가 hidden폼이다.
+이 폼의 value 속성값으로 현재의 id값을 주면 된다.
+
+<input type="hidden" name="old_title" value="<?= $_GET['id']?>"/>
+
+update_process.php의 코드는 다음과 같이 수정한다.
+
+
+<?php
+    rename('data/'.$_POST['old_title'], 'data/'.$_POST['title']);
+    file_put_contents('data/'.$_POST['title'].'.php', $_POST['description']);
+    header('Location:create.php?id='.$_POST['title'].'.php');
+?>
+
+*글 삭제
+
+CRUD의 마지막인 D(delete)에 해당하는 삭제 기능을 구현해 보자.
+그래서 먼저 index.php에 delete라는 버튼을 만들겠다.
+위치는 어디가 좋을까?
+수정버튼 밑이 좋지 않을까?
+삭제도 현재 보고 있는 글이 있을때, 즉 id 값이 있을 때 활성화 해보도록 하겠다.
+
+그러나 삭제는 수정이나 추가와는 다르게 폼을 거칠 필요가 없다.
+delete 버튼을 클릭했을 때 바로 삭제되면 된다.
+그래서 href의 값을 다음과 같이 바꾸겠다.
+<a href="delete_process.php?id=<?=$_GET['id'];?>">delete</a><!--경로 태그를 추가해준다.(이것만 html태그로 작성)-->
+
+그럼 여기에 나온 delete_process.php를 만들겠다.
+그리고 이 안에 들어갈 파일을 삭제하는 php 기능을 검색해보자
+
+검색을 하면 unlink라는걸 찾을 수 있다.
+
+unlink ( string $filename [, resource $context ] ) : bool
+
+보다시피 파일을 삭제하는 기능이라 소개돼 있고 첫 번째 인자로 파일의 이름을 문자열로 넣으라고 돼 있다.
+
+<?php
+    unlink('data/'.$_GET['id']);
+    header("location:create.php");
+?>
+
+결과를 보면 앞서 설명한 대로 이뤄진 것을 확인할 수 있따.
+하지만 여기서 끝내면 안된다.
+
+PHP 페이지에서 삭제할 때 delete라 돼 있는데 이것은 아주 나쁜 방법이다.
+왜냐하면 delete라는 것은 데이터를 삭제하는 링크인데,
+링크를 클릭해서 파일이 삭제된다면 문제가 발생한다.
+delete에 해당하는 주소를 친구에서 주었을 때, 친구가 그 링크를 클릭하면 데이터가 삭제돼 버린다.
+
+그리고 예전에 이런 일이 있었다.
+어느 회사에서 만든 플러그인이 있었는데, 그 플러그인은 사용자들이 방문하지 않은 페이지들을 실제로 사용자가 방문할 때 빨리 열리도록 링크를 미리 읽어두는 것이였다. 그런데 많은 웹 개발자들이 삭제 기능을 링크로 구현해 두어서 문제가 됐다.
+그 플러그인이 삭제 기능에 해당하는 링크를 방문하게 되면 콘텐츠가 삭제되버리는 거다.
+글을 업데이트할 때 submit을 get방식으로 하나요? post방식으로 하나요?
+post방식으로 한다.
+마찬가지로 delete를 클릭했을 때도 뭔가를 삭제한다면 절대로 링크로 하면 안 되고, post방식으로 구현해야 한다.
+
+이를 구현하기 위해 <form>을 만든다.
+<form>의 action 값은 delete_process.php를 지정하고 method를 post로 지정한다.
+그리고 <input> 태그를 만들고 type을 'hidden'으로 지정한 후 이곳에 id 값을 저장한다.
+그리고 Submit 버튼을 만들고 value 값으로 delete를 지정한다.
+
+<form action="delete_process.php" method="post">
+	<input type="hidden" name="id" value="<?=$_GET['id']?>"/>
+	<input type="submit" value="delete"/>
+</form>
+
+delete_process.php 파일의 코드를 다음과 같이 수정한다.
+
+<?php
+    unlink('data/'.$_POST['id']);
+    header("location:create.php");
+?>
+
+post방식으로 보냈으니 post방식으로 받아서 삭제하면 된다.
