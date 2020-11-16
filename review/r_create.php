@@ -1,6 +1,6 @@
 <?php
-    require('lib/print.php');
-    require('lib/header.php');
+    require_once('lib/print.php');
+    require_once('lib/header.php');
 ?>
     <!-- 내용 끝 -->
     <!-- create.php -->
@@ -16,5 +16,5 @@
     </form>
     <!-- create.php끝-->
 <?php
-    require('lib/footer.php');
+    require_once('lib/footer.php');
 ?>
