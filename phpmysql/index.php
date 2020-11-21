@@ -10,6 +10,7 @@
     <ol>
         <li>HTML</li>
     </ol>
+    <a href="create.php">create</a>
     <h2>Welcome</h2>
     Lorem ipsum dolor sit amet, consectertur adipisicing elit,
 </body>
