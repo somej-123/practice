@@ -1,3 +1,6 @@
+<?php
+    require_once("select.php");
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,9 +11,12 @@
 <body>
     <h1>WEB</h1>
     <ol>
-        <li>HTML</li>
+        <?php
+            etc();
+        ?>
     </ol>
     <a href="create.php">create</a>
+    <a href="select.php">목록</a>
     <h2>Welcome</h2>
     Lorem ipsum dolor sit amet, consectertur adipisicing elit,
 </body>

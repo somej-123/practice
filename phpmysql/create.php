@@ -10,6 +10,8 @@
     <ol>
         <li>HTML</li>
     </ol>
+    <a href="index.php">홈으로 돌아가기</a>
+    <a href="select.php">목록으로 돌아가기</a>
     <form action="process_create.php" method="POST">
         <p>
             <input type="text" name="title" placeholder="title"/>

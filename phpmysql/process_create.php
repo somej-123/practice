@@ -1,6 +1,6 @@
 <?php
     // var_dump($_POST);
-    $conn = mysqli_connect('localhost','root','autoset','mydb');
+    $conn = mysqli_connect('127.0.0.1','somej','sns5sms!','mydb');
     //첫번째 인자는 데이터 서버의 주소, 두번째 인자는 데이터 베이스 사용자, 세번째는 데이터 베이스 사용자 비밀번호, 네번째는 데이터베이스 이름
     $sql = "
         INSERT INTO topic
